@@ -1,40 +1,47 @@
-import Button from "@/components/Button";
+"use client";
+
 import CatCard from "@/components/CatCard";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+interface Cat {
+  id: string;
+  url: string;
+  height: number;
+  width: number;
+}
 
 export default function Home() {
-  const names = ["Pepito", "Juanito", "Fernandita", "Luisito"];
-  return (
-    /*
-    <main>
-    <h1>Hello world</h1>
-      <ul>
-        <li>Primer punto</li>
-        <li>Segundo punto</li>
-        <li>Tercer punto</li>
-      </ul>
-      <div className="flex flex-col justify-start items-start">
-        <Button name="Pepito">Hola pepito</Button>
-        <Button name="Juanito">Hola juanito</Button>
-        <Button name="Fernandita">Hola fernandita</Button>
-        <Button name="Luisito">Hola luisito</Button>
-        <Button>Hola no tengo nombre</Button>
-      </div>
-      <div className="flex flex-col justify-start items-start">
+  const [cats, setCats] = useState<Cat[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await axios.get<Cat[]>(
+        process.env["NEXT_PUBLIC_API_URL"] + "/search?limit=10" ?? "",
         {
-          names.map((name, index) => {
-            return (
-              <Button key={index} name={name}>Hola {name}</Button>
-            );
-          })
+          headers: {
+            "x-api-key": process.env["NEXT_PUBLIC_API_KEY"],
+          },
         }
+      );
+      // console.log(response.data)
+      setCats(response.data);
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <main>
+      <h1>Listado de gatos</h1>
+      <div>
+        {cats.map((cat) => (
+          <CatCard key={cat.id} id={cat.id} 
+          src={
+            {url: cat.url, height: cat.height, width: cat.width}
+          }/>
+        ))}
       </div>
     </main>
-    */
-   <main>
-     <h1>Listado de gatos</h1>
-     <div>
-      <CatCard id="OXYvRd7oD" src="https://cdn2.thecatapi.com/images/0XYvRd7oD.jpg"/>
-     </div>
-   </main>
   );
+
 }
