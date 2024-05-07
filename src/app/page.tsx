@@ -3,6 +3,7 @@
 import CatCard from "@/components/CatCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { parsedEnv } from "../../parseEnv";
 
 interface Cat {
   id: string;
